@@ -13,12 +13,10 @@ import NavBar from '@/components/NavBar';
 function App() {
   const location = useLocation()
   const { pathname } = location // 获取当前路径
-  console.log(pathname);
   const needNav = ['/', '/data', '/user']
   const [ showNav, setShowNav ] = useState(false)
 
   useEffect(() => {
-    console.log(needNav);
     setShowNav(needNav.includes(pathname))
   }, [pathname])
 

@@ -7,7 +7,6 @@ import s from './style.module.less'
 const TabIcon = Icon.createFromIconfont('//at.alicdn.com/t/font_2236655_w1mpqp7n1ni.js');
 
 const NavBar = ({showNav}) => {
-    console.log(showNav);
     const [activeKey, setActiveKey] = useState('/')
     const history = useHistory()
 
