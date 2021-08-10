@@ -1,4 +1,5 @@
 import React, {useState, useRef} from 'react'
+import classnames from 'classnames'
 import { Cell, Input, Button, Checkbox, Toast } from 'zarm'
 import Captcha from "react-captcha-code"
 import CustomIcon from '@/components/CustomIcon';
@@ -8,6 +9,7 @@ import s from './style.module.less'
 
 const Login = () => {
     const captchaRef = useRef();
+    const [type, setType] = useState('login'); // 登录注册类型
     const [username, setUsername] = useState(''); // 账号
     const [password, setPassword] = useState(''); // 密码
     const [verify, setVerify] = useState(''); // 验证码
@@ -28,46 +30,77 @@ const Login = () => {
             Toast.show('请输入密码')
             return
         }
-        if (!verify) {
-            Toast.show('请输入验证码')
-            return
-          };
-
-        post('/user/register',{
-            username,
-            password
-        }).then((res) => {
-            if(res.code === 200){
-                console.log(res);
-                Toast.show('注册成功');
-            }
+        if(type == 'login'){
+            // 执行登录接口，获取 token
+            post('/api/user/login', {
+                username,
+                password
+            }).then(res => {
+                if(res.code === 200){
+                    console.log(res);
+                    Toast.show('登录成功');
+                    // 将 token 写入 localStorage
+                    localStorage.setItem('token', data.token);
+                }
+            });
             
-        });
+        } else {
+            if (!verify) {
+                Toast.show('请输入验证码')
+                return
+            };
+            if (verify != captcha) {
+                Toast.show('验证码错误')
+                return
+            };
+            post('/api/user/register',{
+                username,
+                password
+            }).then(res => {
+                if(res.code === 200){
+                    console.log(res);
+                    Toast.show('注册成功');
+                    setType('login');
+                }
+            });
+        }
+        
+
+        
     }
 
     return (
     <div className={s.auth}>
         <div className={s.head} />
-            <div className={s.tab}>
-                <span>注册</span>
-            </div>
-            <div className={s.form}>
-                <Cell icon={<CustomIcon type="zhanghao" />}>
-                <Input
-                    clearable
-                    type="text"
-                    placeholder="请输入账号"
-                    onChange={(value) => setUsername(value)}
-                />
-                </Cell>
-                <Cell icon={<CustomIcon type="mima" />}>
-                <Input
-                    clearable
-                    type="password"
-                    placeholder="请输入密码"
-                    onChange={(value) => setPassword(value)}
-                />
-                </Cell>
+        <div className={s.tab}>
+            <span
+                className={classnames({[s.active] : type == 'login'})}
+                onClick={() => setType('login')}
+            >登录</span>
+            <span
+                className={classnames({[s.active] : type == 'register'})}
+                onClick={() => setType('register')}
+            >注册</span>
+        </div>
+        <div className={s.form}>
+            <Cell icon={<CustomIcon type="zhanghao" />}>
+            <Input
+                clearable
+                type="text"
+                placeholder="请输入账号"
+                onChange={(value) => setUsername(value)}
+            />
+            </Cell>
+            <Cell icon={<CustomIcon type="mima" />}>
+            <Input
+                clearable
+                type="password"
+                placeholder="请输入密码"
+                onChange={(value) => setPassword(value)}
+            />
+            </Cell>
+            {
+                type == 'register' ?
                 <Cell icon={<CustomIcon type="mima" />}>
                     <Input
                     clearable
@@ -76,16 +109,21 @@ const Login = () => {
                     onChange={(value) => setVerify(value)}
                     />
                     <Captcha ref={captchaRef} charNum={4} onChange={handleChange} />
-                </Cell>
-            </div>
-            <div className={s.operation}>
-            <div className={s.agree}>
-                <Checkbox />
-                <label className="text-light">阅读并同意<a>《掘掘手札条款》</a></label>
-            </div>
-            <Button block theme="primary" onClick={onSubmit}>注册</Button>
+                </Cell> : null
+            }
         </div>
-    </div>)
+        <div className={s.operation}>
+            {
+                 type == 'register' ?
+                 <div className={s.agree}>
+                    <Checkbox />
+                    <label className="text-light">阅读并同意<a>《掘掘手札条款》</a></label>
+                </div> : null
+            }
+            <Button block theme="primary" onClick={onSubmit}>{type == 'login' ? '登录' : '注册'}</Button>
+        </div>
+    </div>
+)
 }
 
 export default Login
