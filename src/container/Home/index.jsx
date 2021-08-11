@@ -1,36 +1,25 @@
-import React, { useState } from 'react'
-import { Icon } from 'zarm'
-
+import React, { useState, useEffect } from 'react'
+import { Icon, Pull } from 'zarm'
+import dayjs from 'dayjs'
 import BillItem from '@/components/BillItem'
+import { get } from '@/utils'
 
 import s from './style.module.less'
 
 const Home = () => {
-    const [list, setList] = useState([
-        {
-            bills: [
-                {
-                  amount: "25.00",
-                  date: "1623390740000",
-                  id: 911,
-                  pay_type: 1,
-                  remark: "",
-                  type_id: 1,
-                  type_name: "餐饮"
-                },
-                {
-                    amount: "25.00",
-                    date: "1623390740001",
-                    id: 911,
-                    pay_type: 1,
-                    remark: "",
-                    type_id: 1,
-                    type_name: "餐饮"
-                  },
-              ],
-              date: '2021-06-11'
-        }
-    ])
+    const [currentTime, setCurrentTime] = useState(dayjs().format('YYYY-MM'))
+    const [page, setPage] = useState(1); // 分页
+    const [list, setList] = useState([])
+
+    useEffect(() => {
+        getList()
+    }, [])
+
+    const getList = async () => {
+        const { data } = await get(`/api/bill/list?page=${page}&page_size=5&date=${currentTime}`)
+        setList(data.list)
+    }
+
     return (
         <div className={s.home}>
             <div className={s.header}>

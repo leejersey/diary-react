@@ -13,7 +13,6 @@ const BillItem = ({bill}) => {
     const [expense, setExpense] = useState(0);
     // 添加账单时 bill.bills变化 更新计算
     useEffect(() => {
-        console.log('111')
         // 收入
         const _income = bill.bills.filter(i => i.pay_type == 2).reduce((curr, item) => {
             curr += Number(item.amount);

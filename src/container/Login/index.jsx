@@ -16,12 +16,10 @@ const Login = () => {
     const [captcha, setCaptcha] = useState(''); // 验证码变化后存储值
     
     const handleChange = (captcha) => {
-        console.log('captcha', captcha)
         setCaptcha(captcha);
     }
 
     const onSubmit = () => {
-        console.log(post);
         if (!username) {
             Toast.show('请输入账号')
             return
@@ -37,10 +35,9 @@ const Login = () => {
                 password
             }).then(res => {
                 if(res.code === 200){
-                    console.log(res);
                     Toast.show('登录成功');
                     // 将 token 写入 localStorage
-                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('token', res.data.token);
                 }
             });
             
