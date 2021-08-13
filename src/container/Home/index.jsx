@@ -5,11 +5,15 @@ import BillItem from '@/components/BillItem'
 import { get, REFRESH_STATE, LOAD_STATE } from '@/utils'
 import PopupType from '@/components/PopupType'
 import PopupDate from '@/components/PopupDate'
+import PopupAddBill from '@/components/PopupAddBill'
+import CustomIcon from '@/components/CustomIcon'
+
 import s from './style.module.less'
 
 const Home = () => {
     const typeRef = useRef(); //账单类型ref
     const monthRef = useRef(); // 月份筛选 ref
+    const addRef = useRef(); // 添加账单 ref
     const [currentSelect, setCurrentSelect] = useState({}); // 当前筛选类型
     const [currentTime, setCurrentTime] = useState(dayjs().format('YYYY-MM')) // 当前筛选的时间
     const [page, setPage] = useState(1); // 分页
@@ -64,6 +68,11 @@ const Home = () => {
 
     const mouthToggle = () => {
         monthRef.current && monthRef.current.show()
+    }
+
+    // 添加账单弹窗
+    const addToggle = () => {
+        addRef.current && addRef.current.show()
     }
 
     // 筛选账单类型
@@ -121,6 +130,8 @@ const Home = () => {
             </div>
             <PopupType ref={typeRef} onSelect={select} />
             <PopupDate ref={monthRef} mode='month' onSelect={selectMonth} />
+            <div className={s.add} onClick={addToggle}><CustomIcon type='tianjia' /></div>
+            <PopupAddBill ref={addRef} />
         </div>
     )
 }
