@@ -1,10 +1,14 @@
 // 新增账单弹窗
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Popup  } from 'zarm';
+import cx from 'classnames';
+import { Popup, Icon, Checkbox } from 'zarm';
+
+import s from './style.module.less'
 
 const PopupAddBill = forwardRef((props, ref) => {
     const [show, setShow] = useState(false) // 内部控制弹窗显示隐藏。
+    const [payType, setPayType] = useState('expense')
 
     if (ref) {
         ref.current = {
@@ -17,6 +21,10 @@ const PopupAddBill = forwardRef((props, ref) => {
         }
       };
 
+    const changeType = (type) => {
+        setPayType(type)
+    }
+
     return (
         <Popup
             visible={show}
@@ -25,7 +33,25 @@ const PopupAddBill = forwardRef((props, ref) => {
             destroy={false}
             mountContainer={() => document.body}
         >
-            <div style={{ height: 200, background: '#fff' }}>弹窗</div>
+            <div className={s.addWrap}>
+                {/* 右上角关闭弹窗 */}
+                <header className={s.header}>
+                    <span className={s.close} onClick={() => {setShow(false)}}><Icon type="wrong" /></span>
+                </header>
+                {/* 「收入」和「支出」类型切换 */}
+                <div className={s.filter}>
+                    <div className={s.type}>
+                        <span
+                            onClick={() => changeType('expense')}
+                            className={cx({ [s.expense]: true, [s.active]: payType == 'expense'})}
+                        >支出</span>
+                        <span
+                            onClick={() => changeType('income')}
+                            className={cx({ [s.income]: true, [s.active]: payType == 'income'})}
+                        >收入</span>
+                    </div>
+                </div>
+            </div>
         </Popup>
     )
 })
