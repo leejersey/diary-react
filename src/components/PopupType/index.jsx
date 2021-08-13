@@ -1,5 +1,6 @@
 // 弹出层组件
 import React, { useState, useEffect, forwardRef } from 'react'
+import PropTypes from 'prop-types'
 import { Popup, Icon } from 'zarm';
 import { get } from '@/utils'
 import cx from 'classnames';
@@ -31,7 +32,6 @@ const PopupType = forwardRef(( {onSelect}, ref) => {
     }
 
     const choseType = (item) => {
-        console.log(item)
         setActive(item.id);
         setShow(false)
         // 传值到父组件
@@ -70,5 +70,9 @@ const PopupType = forwardRef(( {onSelect}, ref) => {
       </Popup>
     )
 })
+
+PopupType.propTypes = {
+    onSelect: PropTypes.func
+  }
 
 export default PopupType;
