@@ -9,6 +9,7 @@ import { typeMap } from '@/utils';
 import s from './style.module.less';
 
 const BillItem = ({bill}) => {
+    const history = useHistory();
     const [income, setIncome] = useState(0);
     const [expense, setExpense] = useState(0);
     // 添加账单时 bill.bills变化 更新计算
@@ -26,6 +27,11 @@ const BillItem = ({bill}) => {
         }, 0);
         setExpense(_expense);
     }, [bill.bills]);
+    
+    const goDetail = (item) => {
+        history.push(`/detail?id=${item.id}`)
+    }
+
     return(
         <div className={s.item}>
             <div className={s.headerDate}>
@@ -47,6 +53,7 @@ const BillItem = ({bill}) => {
                         <Cell
                             className={s.bill}
                             key={item.id}
+                            onClick={() => goDetail(item)}
                             title={
                                 <>
                                     <CustomIcon

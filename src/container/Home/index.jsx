@@ -125,7 +125,6 @@ const Home = () => {
                         list.map((item, index) => <BillItem key={index} bill={item} />)
                     }
                 </Pull> : null
-                
             }
             </div>
             <PopupType ref={typeRef} onSelect={select} />
