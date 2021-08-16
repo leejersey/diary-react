@@ -2,11 +2,11 @@
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
-import { Popup, Icon, Checkbox, Keyboard, Input } from 'zarm';
+import { Popup, Icon, Checkbox, Keyboard, Input, Toast } from 'zarm';
 import dayjs from 'dayjs';
 import CustomIcon from '../CustomIcon';
 import PopupDate from '../PopupDate'
-import { get, typeMap } from '@/utils';
+import { get, post, typeMap } from '@/utils';
 
 import s from './style.module.less'
 
@@ -62,7 +62,7 @@ const PopupAddBill = forwardRef((props, ref) => {
 
         // 确认
         if (value == 'ok') {
-            // console.log(amount)
+            addBill()
             return
         }
 
@@ -73,6 +73,34 @@ const PopupAddBill = forwardRef((props, ref) => {
         if(value != '.' && amount.includes('.') && amount && amount.split('.')[1].length >= 2) return
 
         setAmount(amount + value)
+    }
+
+    const addBill = async () => {
+        if (!amount) {
+            Toast.show('请输入具体金额')
+            return
+        }
+
+        const params = {
+            amount: Number(amount).toFixed(2),
+            type_id: currentType.id,
+            type_name: currentType.name,
+            date: dayjs(date).unix()*1000,
+            pay_type: payType == 'expense' ? 1 : 2,
+            remark: remark || ''
+        }
+
+        const result = await post('/api/bill/add', params);
+
+        // 清空数据和状态
+        setAmount('')
+        setPayType('expense');
+        setCurrentType(expense[0]);
+        setDate(new Date());
+        setRemark('');
+        Toast.show('添加成功');
+        setShow(false);
+        if(props.onReload) props.onReload();
     }
 
     return (
