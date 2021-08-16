@@ -8,7 +8,7 @@ import Login from '@/container/Login'
 const routes = [
   {
     path: "/",
-    component: Home
+    component: Home,
   },
   {
     path: "/data",
@@ -19,7 +19,7 @@ const routes = [
     component: User
   },
   {
-    path: "/detail",
+    path: "/detail/:id",
     component: Detail
   },
   {

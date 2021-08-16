@@ -2,7 +2,7 @@
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
-import { Popup, Icon, Checkbox, Keyboard, Input, Toast } from 'zarm';
+import { Popup, Icon, Keyboard, Input, Toast } from 'zarm';
 import dayjs from 'dayjs';
 import CustomIcon from '../CustomIcon';
 import PopupDate from '../PopupDate'

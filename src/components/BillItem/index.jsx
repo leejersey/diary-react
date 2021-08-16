@@ -29,7 +29,7 @@ const BillItem = ({bill}) => {
     }, [bill.bills]);
     
     const goDetail = (item) => {
-        history.push(`/detail?id=${item.id}`)
+        history.push(`/detail/${item.id}`)
     }
 
     return(
