@@ -2,7 +2,7 @@
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
-import { Popup, Icon, Checkbox, Keyboard } from 'zarm';
+import { Popup, Icon, Checkbox, Keyboard, Input } from 'zarm';
 import dayjs from 'dayjs';
 import CustomIcon from '../CustomIcon';
 import PopupDate from '../PopupDate'
@@ -19,6 +19,8 @@ const PopupAddBill = forwardRef((props, ref) => {
     const [expense, setExpense] = useState([]); // 支出类型数组
     const [income, setIncome] = useState([]); // 收入类型数组
     const [currentType, setCurrentType] = useState({}); // 当前选中账单类型
+    const [remark, setRemark] = useState(''); // 备注
+    const [showRemark, setShowRemark] = useState(false); // 备注输入框
 
     useEffect(async () => {
         const { data: {list} } = await get('/api/type/list');
@@ -133,6 +135,22 @@ const PopupAddBill = forwardRef((props, ref) => {
                 <div className={s.money}>
                     <span className={s.sufix}>¥</span>
                     <span className={cx(s.amount, s.animation)}>{amount}</span>
+                </div>
+                {/* 「输入备注 */}
+                <div className={s.remark}>
+                    {
+                        showRemark ? <Input
+                            autoHeight
+                            showLength
+                            maxLength={50}
+                            type="text"
+                            rows={3}
+                            value={remark}
+                            placeholder="请输入备注信息"
+                            onChange={(val) => setRemark(val)}
+                            onBlur={() => setShowRemark(false)}
+                        /> : <span onClick={() => setShowRemark(true)}>{remark || '添加备注'}</span>
+                    }
                 </div>
                 <Keyboard type="price" onKeyClick={(value) => handleMoney(value)} />
                 <PopupDate ref={dateRef} onSelect={selectDate} />
