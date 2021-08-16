@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from 'react'
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect, useRef } from 'react'
+import { useParams, useHistory } from "react-router-dom";
 import cx from 'classnames';
 import dayjs from 'dayjs';
+import { Modal, Toast } from 'zarm';
 import Header from '@/components/Header';
+import PopupAddBill from '@/components/PopupAddBill'
 import CustomIcon from '@/components/CustomIcon';
-import { get, typeMap } from '@/utils';
+import { get, post, typeMap } from '@/utils';
 
 import s from './style.module.less';
 
 const Detail = () => {
   const { id } = useParams();
+  const history = useHistory();
+  const editRef = useRef();
   const [detail, setDetail] = useState({});
 
   useEffect(() => {
@@ -19,6 +23,18 @@ const Detail = () => {
   const getDetail = async () => {
     const { data } = await get(`/api/bill/detail/${id}`);
     setDetail(data);
+  }
+
+  const deleteDetail = () => {
+      Modal.confirm({
+        title: '删除',
+        content: '确认删除账单？',
+        onOk: async () => {
+          const { data } = await post('/api/bill/delete', { id })
+          Toast.show('删除成功')
+          history.goBack()
+      },
+      });
   }
 
   return <div className={s.detail}>
@@ -49,10 +65,11 @@ const Detail = () => {
         </div>
       </div>
       <div className={s.operation}>
-        <span><CustomIcon type='shanchu' />删除</span>
-        <span><CustomIcon type='tianjia' />编辑</span>
+        <span onClick={deleteDetail}><CustomIcon type='shanchu' />删除</span>
+        <span onClick={() => editRef && editRef.current && editRef.current.show()}><CustomIcon type='tianjia' />编辑</span>
       </div>
     </div>
+    <PopupAddBill ref={editRef} detail={detail} onReload={getDetail} />
   </div>
 }
 

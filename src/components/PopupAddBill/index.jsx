@@ -10,7 +10,9 @@ import { get, post, typeMap } from '@/utils';
 
 import s from './style.module.less'
 
-const PopupAddBill = forwardRef((props, ref) => {
+const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
+    const id = detail && detail.id // 外部传进来的账单详情 id
+
     const dateRef = useRef();
     const [show, setShow] = useState(false) // 内部控制弹窗显示隐藏。
     const [payType, setPayType] = useState('expense')
@@ -28,8 +30,23 @@ const PopupAddBill = forwardRef((props, ref) => {
         const _income = list.filter(i => i.type == 2); // 收入类型
         setExpense(_expense);
         setIncome(_income);
-        setCurrentType(_expense[0]); // 新建账单，类型默认是支出类型数组的第一项
+        if (!id) {
+            setCurrentType(_expense[0]); // 新建账单，类型默认是支出类型数组的第一项
+        };
     },[])
+
+    useEffect(async () => {
+        if (detail.id) {
+            setPayType(detail.pay_type == 1 ? 'expense' : 'income')
+            setCurrentType({
+                id: detail.type_id,
+                name: detail.type_name
+            })
+            setRemark(detail.remark)
+            setAmount(detail.amount)
+            setDate(dayjs(Number(detail.date)).$d)
+        }
+    }, [detail])
 
     if (ref) {
         ref.current = {
@@ -90,17 +107,24 @@ const PopupAddBill = forwardRef((props, ref) => {
             remark: remark || ''
         }
 
-        const result = await post('/api/bill/add', params);
+        if(id) {
+            params.id = id;
+            // 如果有 id 需要调用详情更新接口
+            const result = await post('/api/bill/update', params);
+            Toast.show('修改成功');
+        } else {
+            const result = await post('/api/bill/add', params);
+            // 清空数据和状态
+            setAmount('')
+            setPayType('expense');
+            setCurrentType(expense[0]);
+            setDate(new Date());
+            setRemark('');
+            Toast.show('添加成功');
+        }
 
-        // 清空数据和状态
-        setAmount('')
-        setPayType('expense');
-        setCurrentType(expense[0]);
-        setDate(new Date());
-        setRemark('');
-        Toast.show('添加成功');
         setShow(false);
-        if(props.onReload) props.onReload();
+        if(onReload) onReload();
     }
 
     return (
@@ -186,5 +210,9 @@ const PopupAddBill = forwardRef((props, ref) => {
         </Popup>
     )
 })
+PopupAddBill.propTypes={
+    detail: PropTypes.object,
+    onReload: PropTypes.func,
+}
 
 export default PopupAddBill
