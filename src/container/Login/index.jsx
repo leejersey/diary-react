@@ -38,6 +38,7 @@ const Login = () => {
                     Toast.show('登录成功');
                     // 将 token 写入 localStorage
                     localStorage.setItem('token', res.data.token);
+                    window.location.href = '/'
                 }
             });
             

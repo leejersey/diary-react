@@ -2,6 +2,8 @@
 import Home from '@/container/Home'
 import Data from '@/container/Data'
 import User from '@/container/User'
+import UserInfo from '@/container/UserInfo'
+import Account from '@/container/Account'
 import Detail from '@/container/Detail'
 import Login from '@/container/Login'
 
@@ -17,6 +19,14 @@ const routes = [
   {
     path: "/user",
     component: User
+  },
+  {
+    path: "/userinfo",
+    component: UserInfo
+  },
+  {
+    path: '/account',
+    component: Account
   },
   {
     path: "/detail/:id",

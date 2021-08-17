@@ -1,4 +1,7 @@
 import axios from './axios'
+import { baseUrl } from 'config'
+
+const MODE = import.meta.env.MODE // 环境变量
 
 export const get = axios.get
 
@@ -73,3 +76,13 @@ export const typeMap = {
     complete: 5, // 加载完成（无新数据）
   };
   
+  export const imgUrlTrans = (url) => {
+    if (url && url.startsWith('http')) {
+      console.log(url, 1111);
+      return url
+    } else {
+      url = `${MODE == 'development' ? 'http://localhost:7001' : baseUrl}${url}`
+      console.log(url, 2222);
+      return url
+    }
+  }
